@@ -14,13 +14,6 @@ Positive Reinforcement Tracker is a web application designed to help users track
 - User-friendly interface
 - Responsive design
 
-## Technologies Used
-
-- **TypeScript**: 92.8%
-- **JavaScript**: 4%
-- **HTML**: 3%
-- **CSS**: 0.2%
-
 ## Getting Started
 
 To get a local copy up and running, follow these steps.
@@ -63,6 +56,38 @@ yarn start
 Open [http://localhost:3000](http://localhost:3000) to view the app in the browser.
 
 ## Deployment
+
+To build the project, you can use the following command:
+```sh
+npm run build
+```
+or
+```sh
+yarn build
+```
+
+You can deploy this project on GitHub Pages or Netlify.
+
+### Deploy to GitHub Pages
+1. Build the project:
+   ```sh
+   npm run build
+   ```
+2. Push the `build` folder to a `gh-pages` branch:
+   ```sh
+   git subtree push --prefix build origin gh-pages
+   ```
+3. Configure GitHub Pages in the repository settings to use the `gh-pages` branch.
+
+### Deploy to Netlify
+1. Go to [Netlify](https://www.netlify.com/) and sign in.
+2. Click on "New site from Git" and connect your GitHub repository.
+3. Configure the build settings:
+   - Build command: `npm run build` or `yarn build`
+   - Publish directory: `build`
+4. Click "Deploy site".
+
+You can then access your deployed site at the Netlify-provided URL or configure a custom domain.
 
 The application is deployed on Netlify. You can access the production version at [Positive Reinforcement Tracker](https://positive-reinforcement.netlify.app/).
 
