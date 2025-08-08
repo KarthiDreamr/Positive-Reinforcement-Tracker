@@ -28,9 +28,9 @@ export const TaskSetup: React.FC<TaskSetupProps> = ({ onStart }) => {
           <input
             type="number"
             min="1"
-            max="20"
+            max="200"
             value={tasks}
-            onChange={(e) => setTasks(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
+            onChange={(e) => setTasks(Math.max(1, Math.min(200, parseInt(e.target.value) || 1)))}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
