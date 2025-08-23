@@ -99,7 +99,7 @@ export const Tracker: React.FC<TrackerProps> = ({
             <CheckCircle className="w-5 h-5" />
             Complete
           </button>
-          <Timer enabled={useTimer} initialMinutes={timerMinutes} />
+          <Timer enabled={useTimer} initialMinutes={timerMinutes} userId={userId} />
         </>
       )}
     </div>

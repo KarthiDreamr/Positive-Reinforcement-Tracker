@@ -1,18 +1,12 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+/**
+ * Local-only mode: Firebase is disabled.
+ * The app runs entirely with localStorage and does not use Auth/Firestore.
+ * These exports are harmless stubs to satisfy any accidental imports.
+ */
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCIeVu7hS76cLV8PMwy11sjUA7v3Y4qVF4",
-  authDomain: "positive-reinforcement-tracker.firebaseapp.com",
-  projectId: "positive-reinforcement-tracker",
-  storageBucket: "positive-reinforcement-tracker.firebasestorage.app",
-  messagingSenderId: "654076723968",
-  appId: "1:654076723968:web:e6d731812bc86c5022e9e5",
-  measurementId: "G-46RGRPBTSW"
-};
+// Previously: Firebase initialization and providers (removed for local-only mode)
 
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const googleProvider = new GoogleAuthProvider();
+// Safe stubs
+export const auth: any = null;
+export const db: any = null;
+export const googleProvider: any = null;

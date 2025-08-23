@@ -1,6 +1,3 @@
-import { doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
-import { db } from '../config/firebase';
-
 const STORAGE_KEYS = {
   TOTAL_TASKS: 'progress_tracker_total_tasks',
   COMPLETED_TASKS: 'progress_tracker_completed_tasks',
@@ -9,32 +6,19 @@ const STORAGE_KEYS = {
   USE_TASK_NAMES: 'progress_tracker_use_task_names',
   USE_TIMER: 'progress_tracker_use_timer',
   TIMER_MINUTES: 'progress_tracker_timer_minutes',
+  TIMER_END_AT: 'progress_tracker_timer_end_at',
   THEME: 'progress_tracker_theme',
   SOUND_ENABLED: 'progress_tracker_sound_enabled',
 } as const;
 
-const syncWithFirestore = async (userId: string, data: any) => {
-  if (!userId) return;
-  
-  try {
-    const userDoc = doc(db, 'users', userId);
-    await setDoc(userDoc, data, { merge: true });
-  } catch (error) {
-    console.error('Error syncing with Firestore:', error);
-  }
+// Local-only mode: no-op sync/load helpers (Firebase disabled)
+const syncWithFirestore = async (_userId: string, _data: any): Promise<void> => {
+  // no-op
 };
 
-const loadFromFirestore = async (userId: string) => {
-  if (!userId) return null;
-  
-  try {
-    const userDoc = doc(db, 'users', userId);
-    const docSnap = await getDoc(userDoc);
-    return docSnap.exists() ? docSnap.data() : null;
-  } catch (error) {
-    console.error('Error loading from Firestore:', error);
-    return null;
-  }
+const loadFromFirestore = async (_userId: string): Promise<any | null> => {
+  // no-op
+  return null;
 };
 
 export const storage = {
@@ -131,6 +115,25 @@ export const storage = {
     }
   },
 
+  getTimerEndAt: (): number | null => {
+    const value = localStorage.getItem(STORAGE_KEYS.TIMER_END_AT);
+    return value ? Number(value) : null;
+  },
+
+  setTimerEndAt: async (endAt: number | null, userId?: string): Promise<void> => {
+    if (endAt == null) {
+      localStorage.removeItem(STORAGE_KEYS.TIMER_END_AT);
+      if (userId) {
+        await syncWithFirestore(userId, { timerEndAt: null });
+      }
+    } else {
+      localStorage.setItem(STORAGE_KEYS.TIMER_END_AT, String(endAt));
+      if (userId) {
+        await syncWithFirestore(userId, { timerEndAt: endAt });
+      }
+    }
+  },
+
   getTheme: (): 'system' | 'light' | 'dark' => {
     return (localStorage.getItem(STORAGE_KEYS.THEME) as 'system' | 'light' | 'dark') || 'system';
   },
@@ -147,7 +150,7 @@ export const storage = {
     localStorage.setItem(STORAGE_KEYS.SOUND_ENABLED, String(enabled));
   },
 
-  clearAll: async (userId?: string): Promise<void> => {
+  clearAll: async (_userId?: string): Promise<void> => {
     localStorage.removeItem(STORAGE_KEYS.TOTAL_TASKS);
     localStorage.removeItem(STORAGE_KEYS.COMPLETED_TASKS);
     localStorage.removeItem(STORAGE_KEYS.REWARD);
@@ -155,27 +158,11 @@ export const storage = {
     localStorage.removeItem(STORAGE_KEYS.USE_TASK_NAMES);
     localStorage.removeItem(STORAGE_KEYS.USE_TIMER);
     localStorage.removeItem(STORAGE_KEYS.TIMER_MINUTES);
-    
-    if (userId) {
-      try {
-        const userDoc = doc(db, 'users', userId);
-        await deleteDoc(userDoc);
-      } catch (error) {
-        console.error('Error clearing Firestore data:', error);
-      }
-    }
+    localStorage.removeItem(STORAGE_KEYS.TIMER_END_AT);
   },
 
-  loadUserData: async (userId: string): Promise<void> => {
-    const data = await loadFromFirestore(userId);
-    if (data) {
-      if (data.totalTasks !== undefined) storage.setTotalTasks(data.totalTasks);
-      if (data.completedTasks !== undefined) storage.setCompletedTasks(data.completedTasks);
-      if (data.reward !== undefined) storage.setReward(data.reward);
-      if (data.taskNames !== undefined) storage.setTaskNames(data.taskNames);
-      if (data.useTaskNames !== undefined) storage.setUseTaskNames(data.useTaskNames);
-      if (data.useTimer !== undefined) storage.setUseTimer(data.useTimer);
-      if (data.timerMinutes !== undefined) storage.setTimerMinutes(data.timerMinutes);
-    }
+  loadUserData: async (_userId: string): Promise<void> => {
+    // Local-only mode: nothing to load
+    return;
   }
 };
